@@ -1,8 +1,6 @@
-> **Repo layout:** Script sources live in [examples/](./examples/). Training outputs such as models/bc.pt are created locally and are **not** committed here.
-
 # An interpretable autonomous driving system with human in the loop learning and uncertainty awareness
 
-**Simulator stack:** [CARLA](https://carla.org/) 0.9.15 (Windows packaged build, Python API examples under `examples/`).
+**Simulator stack:** [CARLA](https://carla.org/) 0.9.15 (Windows packaged build, Python API examples under `WindowsNoEditor/PythonAPI/examples/`).
 
 This document summarizes the **end-to-end workflow**, **measurable metrics**, **training/validation performance** from artifacts currently in `examples/models/`, and a **comparison narrative** between **dense-urban exposure (Town10 / public & Hugging Face data)** versus **data-sparse maps (e.g. Town01)**. Fill the **closed-loop success-rate table** with your own `--eval-report` JSON runs so all deployment numbers stay traceable to experiment logs.
 
@@ -18,26 +16,26 @@ The system combines a **transparent rule- and planner-based layer** (CARLA `Beha
 
 | Figure | Contents | Relative path |
 |--------|----------|---------------|
-| **Matplotlib realtime dashboard** | Representative layout (same panels as live client): speed, steer, throttle/brake, collision, agent/system strip | `examples/project_docs/figures/dashboard_matplotlib.png` |
-| **Pygame HUD** | Representative dark-theme HUD typography (mirror of in-game overlays) — replace with a live PNG if you publish exact pixels | `examples/project_docs/figures/pygame_hud.png` |
-| **Training / validation curves** | **Measured** PilotNet curves from `models/bc_training_history.csv` (regenerated PNG; same layout as `bc_train.py`) | `examples/models/bc_training_curves.png` |
+| **Matplotlib realtime dashboard** | Representative layout (same panels as live client): speed, steer, throttle/brake, collision, agent/system strip | `WindowsNoEditor/PythonAPI/examples/project_docs/figures/dashboard_matplotlib.png` |
+| **Pygame HUD** | Representative dark-theme HUD typography (mirror of in-game overlays) — replace with a live PNG if you publish exact pixels | `WindowsNoEditor/PythonAPI/examples/project_docs/figures/pygame_hud.png` |
+| **Training / validation curves** | **Measured** PilotNet curves from `models/bc_training_history.csv` (regenerated PNG; same layout as `bc_train.py`) | `WindowsNoEditor/PythonAPI/examples/models/bc_training_curves.png` |
 
 ### Matplotlib analytics dashboard (schematic)
 
-![Realtime analytics dashboard](./examples/project_docs/figures/dashboard_matplotlib.png)
+![Realtime analytics dashboard](./WindowsNoEditor/PythonAPI/examples/project_docs/figures/dashboard_matplotlib.png)
 
 ### Pygame HUD (schematic)
 
-![Pygame HUD](./examples/project_docs/figures/pygame_hud.png)
+![Pygame HUD](./WindowsNoEditor/PythonAPI/examples/project_docs/figures/pygame_hud.png)
 
 ### Training and validation loss (from recorded run)
 
-![Training and validation curves](./examples/models/bc_training_curves.png)
+![Training and validation curves](./WindowsNoEditor/PythonAPI/examples/models/bc_training_curves.png)
 
 To add your own live captures, replace the PNGs above or save under `project_docs/figures/` and point the links there.
 
 ```powershell
-mkdir -Force .\examples\project_docs\figures
+mkdir -Force .\WindowsNoEditor\PythonAPI\examples\project_docs\figures
 ```
 
 ---
@@ -126,7 +124,7 @@ From `automatic_control.py` extensions and HUD:
 
 ## Recorded training & validation loss (artifacts in repo)
 
-The following rows are copied from **`examples/models/bc_training_summary.json`** and **`bc_training_history.csv`** produced by `bc_train.py` (dataset: `dataset\run1`, seed `42`, 30 epochs, batch 64, CPU).
+The following rows are copied from **`WindowsNoEditor/PythonAPI/examples/models/bc_training_summary.json`** and **`bc_training_history.csv`** produced by `bc_train.py` (dataset: `dataset\run1`, seed `42`, 30 epochs, batch 64, CPU).
 
 ### Summary
 
@@ -155,7 +153,7 @@ Trend: **steady reduction** in validation loss early, then refinement in late ep
 Generate updated plots anytime:
 
 ```bash
-cd examples
+cd WindowsNoEditor/PythonAPI/examples
 pip install -r bc_requirements.txt
 python bc_train.py --data dataset --epochs 30 --batch-size 64 --out models/bc.pt
 # Produces CSV, JSON, and bc_training_curves.png unless --no-plots
@@ -200,7 +198,7 @@ Aggregate several sessions per map with fixed seeds and traffic settings:
 ## Quick commands
 
 ```bash
-cd examples
+cd WindowsNoEditor/PythonAPI/examples
 pip install -r bc_requirements.txt
 
 # Map load (examples)
