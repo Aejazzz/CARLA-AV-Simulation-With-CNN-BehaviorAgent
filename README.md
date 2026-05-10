@@ -2,7 +2,7 @@
 
 # An interpretable autonomous driving system with human in the loop learning and uncertainty awareness
 
-**Simulator stack:** [CARLA](https://carla.org/) 0.9.15 (Windows packaged build, Python API examples under `examples/`).
+**Simulator stack:** [CARLA](https://carla.org/) 0.9.15 (Windows packaged build). Copy [examples/](./examples/) into `WindowsNoEditor/PythonAPI/examples/` in your CARLA install.
 
 This document summarizes the **end-to-end workflow**, **measurable metrics**, **training/validation performance** from artifacts currently in `examples/models/`, and a **comparison narrative** between **dense-urban exposure (Town10 / public & Hugging Face data)** versus **data-sparse maps (e.g. Town01)**. Fill the **closed-loop success-rate table** with your own `--eval-report` JSON runs so all deployment numbers stay traceable to experiment logs.
 
@@ -18,9 +18,9 @@ The system combines a **transparent rule- and planner-based layer** (CARLA `Beha
 
 | Figure | Contents | Relative path |
 |--------|----------|---------------|
-| **Matplotlib realtime dashboard** | Representative layout (same panels as live client): speed, steer, throttle/brake, collision, agent/system strip | `examples/project_docs/figures/dashboard_matplotlib.png` |
-| **Pygame HUD** | Representative dark-theme HUD typography (mirror of in-game overlays) — replace with a live PNG if you publish exact pixels | `examples/project_docs/figures/pygame_hud.png` |
-| **Training / validation curves** | **Measured** PilotNet curves from `models/bc_training_history.csv` (regenerated PNG; same layout as `bc_train.py`) | `examples/models/bc_training_curves.png` |
+| **Matplotlib realtime dashboard** | Representative layout (same panels as live client): speed, steer, throttle/brake, collision, agent/system strip | [`dashboard_matplotlib.png`](./examples/project_docs/figures/dashboard_matplotlib.png) |
+| **Pygame HUD** | Representative dark-theme HUD typography (mirror of in-game overlays) — replace with a live PNG if you publish exact pixels | [`pygame_hud.png`](./examples/project_docs/figures/pygame_hud.png) |
+| **Training / validation curves** | **Measured** PilotNet curves from `bc_training_history.csv` (regenerated PNG; same layout as `bc_train.py`) | [`bc_training_curves.png`](./examples/models/bc_training_curves.png) |
 
 ### Matplotlib analytics dashboard (schematic)
 
@@ -34,7 +34,7 @@ The system combines a **transparent rule- and planner-based layer** (CARLA `Beha
 
 ![Training and validation curves](./examples/models/bc_training_curves.png)
 
-To add your own live captures, replace the PNGs above or save under `project_docs/figures/` and point the links there.
+To add your own live captures, overwrite the PNGs above or save under [`examples/project_docs/figures/`](./examples/project_docs/figures/).
 
 ```powershell
 mkdir -Force .\examples\project_docs\figures
@@ -72,7 +72,7 @@ flowchart LR
   end
 ```
 
-1. **Start CARLA:** `WindowsNoEditor\CarlaUE4.exe` (RPC default `127.0.0.1:2000`).
+1. **Start CARLA:** run `CarlaUE4.exe` from your CARLA `WindowsNoEditor` install (RPC default `127.0.0.1:2000`).
 2. **Map (example):** `PythonAPI\util\config.py -m Town10HD_Opt` (or `Town01` for comparison runs).
 3. **Collect data:** `python bc_data_collector.py --output dataset\run_townXX_01` (press **R** to record).
 4. **Train:** `python bc_train.py --data dataset --epochs 30 --batch-size 64 --out models\bc.pt`
