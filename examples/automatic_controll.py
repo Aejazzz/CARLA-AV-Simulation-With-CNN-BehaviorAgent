@@ -388,6 +388,20 @@ def game_loop(args):
                         'The target has been reached, stopping the simulation')
                     break
 
+            eval_cap = getattr(args, 'eval_duration_s', None)
+            if (
+                eval_cap is not None
+                and eval_cap > 0
+                and eval_start_sim is not None
+                and (sim_t - eval_start_sim) >= eval_cap
+            ):
+                eval_session_outcome = 'timeout'
+                sim_end_for_eval = sim_t
+                logging.info(
+                    'Eval duration cap reached (%.1f s sim time).',
+                    eval_cap)
+                break
+
             agent_control = agent.run_step()
             agent_control.manual_gear_shift = False
 
@@ -604,6 +618,10 @@ def main():
     p.add_argument(
         '--eval-report', metavar='PATH',
         help='optional JSON path: session distance, collisions, goals, time-to-first-collision')
+    p.add_argument(
+        '--eval-duration-s', type=float, default=None,
+        help='optional max simulation seconds before ending with outcome timeout '
+             '(useful for batch eval)')
 
     args = p.parse_args()
     args.width, args.height = [int(x) for x in args.res.split('x')]

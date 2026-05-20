@@ -2,9 +2,9 @@
 
 # An interpretable autonomous driving system with human in the loop learning and uncertainty awareness
 
-**Simulator stack:** [CARLA](https://carla.org/) 0.9.15 (Windows packaged build). Copy [examples/](./examples/) into `WindowsNoEditor/PythonAPI/examples/` in your CARLA install.
+**Simulator stack:** [CARLA](https://carla.org/) 0.9.15 (Windows packaged build, Python API examples under `examples/`).
 
-This document summarizes the **end-to-end workflow**, **measurable metrics**, **training/validation performance** from artifacts currently in `examples/models/`, and a **comparison narrative** between **dense-urban exposure (Town10 / public & Hugging Face data)** versus **data-sparse maps (e.g. Town01)**. Fill the **closed-loop success-rate table** with your own `--eval-report` JSON runs so all deployment numbers stay traceable to experiment logs.
+This document is the **full project reference**: system architecture, training metrics, presentation plots, closed-loop evaluation results (Town10 vs Town01), and reproducible commands. Script sources live under `examples/`; a GitHub mirror is at [CARLA-AV-Simulation-With-CNN-BehaviorAgent](https://github.com/Aejazzz/CARLA-AV-Simulation-With-CNN-BehaviorAgent.git).
 
 ---
 
@@ -14,30 +14,109 @@ The system combines a **transparent rule- and planner-based layer** (CARLA `Beha
 
 ---
 
+## System architecture
+
+Hybrid stack: **BehaviorAgent** (symbolic planner + traffic rules) handles steering and safety; **PilotNet CNN** (behavioral cloning) optionally fuses longitudinal throttle/brake when the scene is “easy” (`--cnn-mode when_needed`).
+
+```mermaid
+flowchart TB
+  subgraph sim [CARLA 0.9.15 simulator]
+    UE4[CarlaUE4.exe RPC :2000]
+    MAP[Town maps Town10HD_Opt / Town01_Opt]
+    CAM[RGB cameras + collision sensors]
+    UE4 --> MAP
+    UE4 --> CAM
+  end
+
+  subgraph hitl [Human-in-the-loop data]
+    HUMAN[Expert driver keyboard]
+    COL[bc_data_collector.py]
+    DS[(dataset/run* labels.csv + center/left/right JPEGs)]
+    HUMAN --> COL --> DS
+  end
+
+  subgraph offline [Offline learning]
+    DS --> TRAIN[bc_train.py PilotNet CNN]
+    TRAIN --> ART[bc.pt + history CSV + summary JSON + plots]
+  end
+
+  subgraph runtime [Closed-loop hybrid autopilot]
+    ART --> HYB[automatic_controll.py]
+    CAM --> HYB
+    HYB --> BA[BehaviorAgent steer + rules + obstacles]
+    HYB --> PN[PilotNet CNN throttle/brake]
+    BA --> GATE{cnn-mode gate}
+    PN --> GATE
+    GATE -->|when_needed / always| FUSE[Longitudinal fusion + safety caps]
+    BA --> FUSE
+    FUSE --> CTRL[VehicleControl applied each tick]
+  end
+
+  subgraph observe [Observability and evaluation]
+    CTRL --> HUD[Pygame HUD + blend agreement %]
+    CTRL --> DASH[Matplotlib + psutil dashboard]
+    CTRL --> EVAL[--eval-report JSON distance goals collisions]
+    EVAL --> BATCH[run_eval_town_comparison.py aggregate]
+  end
+
+  MAP --> COL
+  MAP --> HYB
+```
+
+### Component roles
+
+| Layer | Module | Responsibility |
+|-------|--------|----------------|
+| **Simulator** | `CarlaUE4.exe`, `config.py` | Maps, physics, sensors, sync mode |
+| **Data** | `bc_data_collector.py`, `bc_dataset.py` | Record demos; 3-camera stack, resize 200×66 |
+| **Model** | `bc_model.py`, `bc_train.py` | PilotNet CNN (252k params); steer/throttle/brake regression |
+| **Symbolic policy** | `automatic_control.py` → `BehaviorAgent` | Route planning, traffic lights, obstacle avoidance, steering |
+| **Neural policy** | `automatic_controll.py` + `bc.pt` | Longitudinal CNN; gated fusion with agent |
+| **Evaluation** | `--eval-report`, `run_eval_town_comparison.py` | Closed-loop metrics; Town10 vs Town01 batch |
+| **Reporting** | `generate_training_presentation_plots.py` | Slide-ready PNGs from training CSV |
+
+---
+
 ## Visual summary
 
-| Figure | Contents | Relative path |
-|--------|----------|---------------|
-| **Matplotlib realtime dashboard** | Representative layout (same panels as live client): speed, steer, throttle/brake, collision, agent/system strip | [`dashboard_matplotlib.png`](./examples/project_docs/figures/dashboard_matplotlib.png) |
-| **Pygame HUD** | Representative dark-theme HUD typography (mirror of in-game overlays) — replace with a live PNG if you publish exact pixels | [`pygame_hud.png`](./examples/project_docs/figures/pygame_hud.png) |
-| **Training / validation curves** | **Measured** PilotNet curves from `bc_training_history.csv` (regenerated PNG; same layout as `bc_train.py`) | [`bc_training_curves.png`](./examples/models/bc_training_curves.png) |
+### Runtime UI (schematic)
 
-### Matplotlib analytics dashboard (schematic)
+| Figure | Contents | Path |
+|--------|----------|------|
+| **Matplotlib dashboard** | Speed, steer, throttle/brake, collision, agent strip | `project_docs/figures/dashboard_matplotlib.png` |
+| **Pygame HUD** | Dark-theme in-game overlay + PilotNet block | `project_docs/figures/pygame_hud.png` |
 
 ![Realtime analytics dashboard](./examples/project_docs/figures/dashboard_matplotlib.png)
 
-### Pygame HUD (schematic)
-
 ![Pygame HUD](./examples/project_docs/figures/pygame_hud.png)
 
-### Training and validation loss (from recorded run)
+### Training results — presentation plots (30 epochs, dataset/run1)
 
-![Training and validation curves](./examples/models/bc_training_curves.png)
+Generated by `generate_training_presentation_plots.py` from `models/bc_training_history.csv`.
 
-To add your own live captures, overwrite the PNGs above or save under [`examples/project_docs/figures/`](./examples/project_docs/figures/).
+| Slide | Contents | Path |
+|-------|----------|------|
+| **Total loss + summary** | Train/val curve, LR schedule, hyperparameters | `project_docs/presentation/01_total_loss_summary.png` |
+| **Per-axis loss** | Steer / throttle / brake MSE over epochs | `project_docs/presentation/02_per_axis_loss.png` |
+| **Epoch 1 vs 30** | Validation bar chart before/after | `project_docs/presentation/03_val_epoch1_vs_30.png` |
+| **Improvement %** | Val loss reduction per output head | `project_docs/presentation/04_val_improvement_pct.png` |
+| **Full dashboard** | 2×2 loss panels (matches `bc_train.py` layout) | `project_docs/presentation/05_training_dashboard.png` |
+
+![Total loss and training summary](./examples/project_docs/presentation/01_total_loss_summary.png)
+
+![Per-axis validation loss](./examples/project_docs/presentation/02_per_axis_loss.png)
+
+![Validation loss epoch 1 vs 30](./examples/project_docs/presentation/03_val_epoch1_vs_30.png)
+
+![Validation loss improvement percentage](./examples/project_docs/presentation/04_val_improvement_pct.png)
+
+![Training dashboard 2x2](./examples/project_docs/presentation/05_training_dashboard.png)
+
+Regenerate plots after a new training run:
 
 ```powershell
-mkdir -Force .\examples\project_docs\figures
+cd examples
+python generate_training_presentation_plots.py
 ```
 
 ---
@@ -72,7 +151,7 @@ flowchart LR
   end
 ```
 
-1. **Start CARLA:** run `CarlaUE4.exe` from your CARLA `WindowsNoEditor` install (RPC default `127.0.0.1:2000`).
+1. **Start CARLA:** `WindowsNoEditor\CarlaUE4.exe` (RPC default `127.0.0.1:2000`).
 2. **Map (example):** `PythonAPI\util\config.py -m Town10HD_Opt` (or `Town01` for comparison runs).
 3. **Collect data:** `python bc_data_collector.py --output dataset\run_townXX_01` (press **R** to record).
 4. **Train:** `python bc_train.py --data dataset --epochs 30 --batch-size 64 --out models\bc.pt`
@@ -158,7 +237,8 @@ Generate updated plots anytime:
 cd examples
 pip install -r bc_requirements.txt
 python bc_train.py --data dataset --epochs 30 --batch-size 64 --out models/bc.pt
-# Produces CSV, JSON, and bc_training_curves.png unless --no-plots
+python generate_training_presentation_plots.py
+# Produces CSV, JSON, bc_training_curves.png, and project_docs/presentation/*.png
 ```
 
 ---
@@ -171,21 +251,30 @@ Large **public imitation-learning bundles** on the web and models such as stream
 
 **Town01** is a **simpler, sparser** layout with different lane widths, semantics, and traffic patterns. If your **HitL logs** (or HF stream) under-represent that geometry, the CNN sees **covariate shift**: similar training loss can still yield **poor closed-loop gains** (late braking, wrong pace on straights, over/under-throttle), so `--cnn-mode when_needed` may **rarely trust** the network or require frequent agent overrides—**success rate and distance-to-goal** suffer unless you **record Town01-specific demonstrations** or **rebalance** the dataset.
 
-### What to report (fill from your experiments)
+### Closed-loop results (measured)
 
-Aggregate several sessions per map with fixed seeds and traffic settings:
+Aggregate over **3 trials** per cell (seeds 42–44), 300 s sim cap, `destination_index=80`, no NPC traffic. Success = goal reached with zero collisions.
 
-| Map | CNN mode | Sessions \(N\) | Goal success rate* | Collision-free rate** | Mean distance (m) | Mean TTC first collision (s) |
-|-----|----------|----------------|--------------------|------------------------|--------------------|------------------------------|
-| Town10HD_Opt | when_needed | | | | | |
-| Town10HD_Opt | never (baseline) | | | | | |
-| Town01 | when_needed | | | | | |
-| Town01 | never (baseline) | | | | | |
+| Map | CNN mode | Sessions \(N\) | Goal success rate* | Collision-free rate** | Mean distance (m) | Mean session time (s) |
+|-----|----------|----------------|--------------------|------------------------|--------------------|-----------------------|
+| Town10HD_Opt | when_needed | 3 | **0%** | **100%** | 388 | 300 (timeout) |
+| Town10HD_Opt | never (baseline) | 3 | **100%** | **100%** | 526 | ~80–127 |
+| Town01_Opt | when_needed | 3 | **0%** | **100%** | 158 | 300 (timeout) |
+| Town01_Opt | never (baseline) | 3 | **100%** | **100%** | 734 | ~127–135 |
 
-\*Per your published success definition (e.g. goal without collision).  
-\*\*Fraction of runs with `collision_events == 0` or with TTC null—state which.
+**Interpretation:** Pure BehaviorAgent (`never`) reached the goal on every trial on both maps. Hybrid `when_needed` stayed collision-free but did not reach the goal within 300 s; Town01 showed a larger distance gap (158 m vs 734 m baseline), consistent with distribution shift from Town10-style training data.
 
-**How to fill:** run `automatic_controll.py --eval-report eval\<map>_<trial>.json`, then compute means and rates in Excel/Python over the folder.
+\*Per success definition: `goals_reached >= 1` and `collision_events == 0`.  
+\*\*All 12 sessions had `collision_events == 0`.
+
+**Protocol (2026-05-20):** `py -3.7 run_eval_town_comparison.py --skip-carla-start --trials 3 --eval-duration-s 300`. Raw JSON: `eval/`; aggregate: `eval/town_comparison_summary.json`.
+
+**Re-run:**
+
+```powershell
+cd examples
+py -3.7 run_eval_town_comparison.py --skip-carla-start --trials 3 --eval-duration-s 600
+```
 
 ---
 
@@ -220,10 +309,39 @@ python automatic_controll.py --model models/bc.pt --cnn-mode when_needed --eval-
 | Path | Role |
 |------|------|
 | `examples/bc_data_collector.py` | HitL demonstration capture |
-| `examples/bc_train.py` | Training + `bc_training_history.csv`, summary JSON, curve PNG |
+| `examples/bc_dataset.py` | PyTorch dataset + preprocessing |
+| `examples/bc_model.py` | PilotNet CNN definition |
+| `examples/bc_train.py` | Training loop; writes CSV, JSON, curves PNG |
+| `examples/generate_training_presentation_plots.py` | Slide-ready PNGs from training CSV |
 | `examples/automatic_control.py` | Reference client + matplotlib/psutil dashboard |
-| `examples/automatic_controll.py` | Hybrid autopilot + eval JSON export |
-| `examples/models/bc.pt` | Best-validation checkpoint |
+| `examples/automatic_controll.py` | Hybrid autopilot + `--eval-report` + `--eval-duration-s` |
+| `examples/run_eval_town_comparison.py` | Batch Town10 vs Town01 eval + summary JSON |
+| `examples/models/bc.pt` | Best-validation checkpoint (created locally) |
+| `examples/models/bc_training_history.csv` | Per-epoch train/val metrics |
+| `examples/models/bc_training_summary.json` | Hyperparameters + best epoch |
+| `examples/project_docs/presentation/*.png` | Presentation training plots |
+| `examples/eval/town_comparison_summary.json` | Aggregated closed-loop results |
+
+---
+
+## Repository layout
+
+```text
+CARLA_0.9.15/
+├── README.md
+├── Interpretable_Autonomous_Driving_README.md
+└── examples/   # copy into WindowsNoEditor/PythonAPI/examples/
+        ├── bc_*.py                        # Data, model, train
+        ├── automatic_controll.py          # Hybrid deploy
+        ├── run_eval_town_comparison.py    # Batch eval
+        ├── generate_training_presentation_plots.py
+        ├── dataset/run1/                  # HitL recordings
+        ├── models/                        # Checkpoints + training logs
+        ├── eval/                          # Closed-loop JSON reports
+        └── project_docs/
+            ├── figures/                   # HUD + dashboard schematics
+            └── presentation/              # Training slide PNGs
+```
 
 ---
 
@@ -233,4 +351,4 @@ CARLA and bundled examples follow **CARLA and third-party licenses**. This Hybri
 
 ---
 
-*Last synced with on-disk training artifacts: `best_val_loss = 0.086934`, `best_epoch = 30`, dataset split as in `bc_training_summary.json`. Update metrics after new runs.*
+*Last synced: training `best_val_loss = 0.086934` (epoch 30); presentation plots in `project_docs/presentation/`; closed-loop eval from `eval/town_comparison_summary.json` (2026-05-20).*

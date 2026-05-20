@@ -1,0 +1,258 @@
+{
+  "eval_duration_s_cap": 300.0,
+  "generated_at_utc": "2026-05-20T09:22:28.127107+00:00",
+  "sessions": [
+    {
+      "cnn_mode": "when_needed",
+      "map_name": "Carla/Maps/Town10HD_Opt",
+      "map_slug": "town10",
+      "outcome": "timeout",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_when_needed_trial01_seed42.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 374.775,
+        "duration_s": 300.00000447034836,
+        "goals_reached": 0,
+        "time_end_s": 325.54244688525796,
+        "time_start_s": 25.5424424149096,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "when_needed",
+      "map_name": "Carla/Maps/Town10HD_Opt",
+      "map_slug": "town10",
+      "outcome": "timeout",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_when_needed_trial02_seed43.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 484.439,
+        "duration_s": 300.00000447034836,
+        "goals_reached": 0,
+        "time_end_s": 633.0580311603844,
+        "time_start_s": 333.05802669003606,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "when_needed",
+      "map_name": "Carla/Maps/Town10HD_Opt",
+      "map_slug": "town10",
+      "outcome": "timeout",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_when_needed_trial03_seed44.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 304.345,
+        "duration_s": 300.00000447034836,
+        "goals_reached": 0,
+        "time_end_s": 940.4098193347454,
+        "time_start_s": 640.409814864397,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "never",
+      "map_name": "Carla/Maps/Town10HD_Opt",
+      "map_slug": "town10",
+      "outcome": "goal_reached",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_never_trial01_seed42.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 526.173,
+        "duration_s": 82.00000122189522,
+        "goals_reached": 1,
+        "time_end_s": 1029.7190716601908,
+        "time_start_s": 947.7190704382956,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "never",
+      "map_name": "Carla/Maps/Town10HD_Opt",
+      "map_slug": "town10",
+      "outcome": "goal_reached",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_never_trial02_seed43.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 526.418,
+        "duration_s": 126.80000188946724,
+        "goals_reached": 1,
+        "time_end_s": 1164.1517363525927,
+        "time_start_s": 1037.3517344631255,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "never",
+      "map_name": "Carla/Maps/Town10HD_Opt",
+      "map_slug": "town10",
+      "outcome": "goal_reached",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_never_trial03_seed44.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 526.486,
+        "duration_s": 81.45000121369958,
+        "goals_reached": 1,
+        "time_end_s": 1253.2399338707328,
+        "time_start_s": 1171.7899326570332,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "when_needed",
+      "map_name": "Carla/Maps/Town01_Opt",
+      "map_slug": "town01",
+      "outcome": "timeout",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_when_needed_trial01_seed42.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 166.864,
+        "duration_s": 300.00000447034836,
+        "goals_reached": 0,
+        "time_end_s": 316.09315326809883,
+        "time_start_s": 16.093148797750473,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "when_needed",
+      "map_name": "Carla/Maps/Town01_Opt",
+      "map_slug": "town01",
+      "outcome": "timeout",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_when_needed_trial02_seed43.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 154.703,
+        "duration_s": 300.00000447034836,
+        "goals_reached": 0,
+        "time_end_s": 623.9036540426314,
+        "time_start_s": 323.90364957228303,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "when_needed",
+      "map_name": "Carla/Maps/Town01_Opt",
+      "map_slug": "town01",
+      "outcome": "timeout",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_when_needed_trial03_seed44.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 152.359,
+        "duration_s": 300.00000447034836,
+        "goals_reached": 0,
+        "time_end_s": 931.2412502206862,
+        "time_start_s": 631.2412457503378,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "never",
+      "map_name": "Carla/Maps/Town01_Opt",
+      "map_slug": "town01",
+      "outcome": "goal_reached",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_never_trial01_seed42.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 734.494,
+        "duration_s": 134.80000200867653,
+        "goals_reached": 1,
+        "time_end_s": 1073.1308056339622,
+        "time_start_s": 938.3308036252856,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "never",
+      "map_name": "Carla/Maps/Town01_Opt",
+      "map_slug": "town01",
+      "outcome": "goal_reached",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_never_trial02_seed43.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 734.392,
+        "duration_s": 127.10000189393759,
+        "goals_reached": 1,
+        "time_end_s": 1207.3918531313539,
+        "time_start_s": 1080.2918512374163,
+        "time_to_first_collision_s": null
+      }
+    },
+    {
+      "cnn_mode": "never",
+      "map_name": "Carla/Maps/Town01_Opt",
+      "map_slug": "town01",
+      "outcome": "goal_reached",
+      "report": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_never_trial03_seed44.json",
+      "simulation": {
+        "collision_events": 0,
+        "distance_driven_m": 734.594,
+        "duration_s": 127.25000189617276,
+        "goals_reached": 1,
+        "time_end_s": 1341.772823330015,
+        "time_start_s": 1214.5228214338422,
+        "time_to_first_collision_s": null
+      }
+    }
+  ],
+  "success_definition": "goals_reached >= 1 and collision_events == 0",
+  "table": [
+    {
+      "cnn_mode": "never",
+      "collision_free_rate": 1.0,
+      "goal_success_rate": 1.0,
+      "map_slug": "town01",
+      "mean_distance_m": 734.49,
+      "mean_ttc_first_collision_s": null,
+      "reports": [
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_never_trial01_seed42.json",
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_never_trial02_seed43.json",
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_never_trial03_seed44.json"
+      ],
+      "sessions": 3
+    },
+    {
+      "cnn_mode": "when_needed",
+      "collision_free_rate": 1.0,
+      "goal_success_rate": 0.0,
+      "map_slug": "town01",
+      "mean_distance_m": 157.98,
+      "mean_ttc_first_collision_s": null,
+      "reports": [
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_when_needed_trial01_seed42.json",
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_when_needed_trial02_seed43.json",
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town01_when_needed_trial03_seed44.json"
+      ],
+      "sessions": 3
+    },
+    {
+      "cnn_mode": "never",
+      "collision_free_rate": 1.0,
+      "goal_success_rate": 1.0,
+      "map_slug": "town10",
+      "mean_distance_m": 526.36,
+      "mean_ttc_first_collision_s": null,
+      "reports": [
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_never_trial01_seed42.json",
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_never_trial02_seed43.json",
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_never_trial03_seed44.json"
+      ],
+      "sessions": 3
+    },
+    {
+      "cnn_mode": "when_needed",
+      "collision_free_rate": 1.0,
+      "goal_success_rate": 0.0,
+      "map_slug": "town10",
+      "mean_distance_m": 387.85,
+      "mean_ttc_first_collision_s": null,
+      "reports": [
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_when_needed_trial01_seed42.json",
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_when_needed_trial02_seed43.json",
+        "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\eval\\town10_when_needed_trial03_seed44.json"
+      ],
+      "sessions": 3
+    }
+  ],
+  "trials_per_cell": 3
+}

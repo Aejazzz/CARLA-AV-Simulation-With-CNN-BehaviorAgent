@@ -1,0 +1,39 @@
+{
+  "args": {
+    "batch_size": 64,
+    "data": "dataset\\run1",
+    "device": "cpu",
+    "epochs": 30,
+    "lr": 0.0001,
+    "no_augment": false,
+    "no_side_cameras": false,
+    "out": "models\\bc.pt",
+    "seed": 42,
+    "val_split": 0.15,
+    "weight_decay": 1e-05
+  },
+  "artifacts": {
+    "checkpoint_best": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\models\\bc.pt",
+    "checkpoint_last": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\models\\bc.last.pt",
+    "curves_png": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\models\\bc_training_curves.png",
+    "history_csv": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\models\\bc_training_history.csv",
+    "summary_json": "C:\\CARLA_0.9.15\\WindowsNoEditor\\PythonAPI\\examples\\models\\bc_training_summary.json"
+  },
+  "dataset": {
+    "runs": [
+      "dataset\\run1"
+    ],
+    "train_label_rows": 1543,
+    "train_samples": 4629,
+    "val_label_rows": 272,
+    "val_samples": 272
+  },
+  "model": {
+    "parameters": 252241
+  },
+  "result": {
+    "best_epoch": 30,
+    "best_val_loss": 0.0869339678217383,
+    "finished_at_utc": "2026-05-10T10:34:24.260300Z"
+  }
+}
