@@ -243,8 +243,14 @@ def fig_improvement(rows, out_dir):
 
 def fig_dashboard(rows, out_dir):
     """Full 2x2 dashboard (slide-ready duplicate of bc_train layout)."""
+    from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
     epochs = [int(r['epoch']) for r in rows]
-    fig, axes = plt.subplots(2, 2, figsize=(12.8, 7.2), facecolor=BG)
+    lr = [float(r['lr']) for r in rows]
+    fig, axes = plt.subplots(2, 2, figsize=(13.0, 8.5), facecolor=BG)
+    fig.subplots_adjust(
+        left=0.07, right=0.97, top=0.88, bottom=0.09,
+        wspace=0.38, hspace=0.48)
 
     ax = axes[0, 0]
     ax.plot(epochs, [float(r['train_loss']) for r in rows],
@@ -252,11 +258,16 @@ def fig_dashboard(rows, out_dir):
     ax.plot(epochs, [float(r['val_loss']) for r in rows],
             color=C_VAL, lw=2, label='val')
     _style_axes(ax, 'Total loss', ylabel='MSE')
-    ax.legend(fontsize=10)
-    ax2 = ax.twinx()
-    ax2.plot(epochs, [float(r['lr']) for r in rows],
-             color=C_LR, ls='--', lw=1.5)
-    ax2.set_ylabel('LR', fontsize=10, color=C_LR)
+    ax.legend(fontsize=10, loc='upper left')
+
+    # LR inset stays inside the total-loss cell (avoids overlap with Steer MSE)
+    ax_lr = inset_axes(ax, width='42%', height='32%', loc='upper right',
+                       borderpad=1.4)
+    ax_lr.plot(epochs, lr, color=C_LR, ls='--', lw=1.5)
+    ax_lr.set_ylabel('LR', fontsize=8, color=C_LR, labelpad=2)
+    ax_lr.tick_params(labelsize=7, colors=C_LR, pad=1)
+    ax_lr.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.1e'))
+    ax_lr.grid(True, alpha=0.2)
 
     for ax, tk, vk, title in [
         (axes[0, 1], 'train_steer', 'val_steer', 'Steer MSE'),
@@ -268,12 +279,12 @@ def fig_dashboard(rows, out_dir):
         ax.plot(epochs, [float(r[vk]) for r in rows],
                 color=C_VAL, lw=2, label='val')
         _style_axes(ax, title, ylabel='MSE')
-        ax.legend(fontsize=10)
+        ax.legend(fontsize=10, loc='upper right')
 
     fig.suptitle('CARLA PilotNet — 30-Epoch Training Dashboard',
-                 fontsize=17, fontweight='bold')
+                 fontsize=17, fontweight='bold', y=0.96)
     path = os.path.join(out_dir, '05_training_dashboard.png')
-    fig.savefig(path, dpi=200, bbox_inches='tight', facecolor=BG)
+    fig.savefig(path, dpi=200, facecolor=BG)
     plt.close(fig)
     return path
 
