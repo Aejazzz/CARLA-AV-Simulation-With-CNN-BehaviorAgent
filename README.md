@@ -280,16 +280,6 @@ Comparison against published imitation-learning results on Town10-style settings
 
 **Overall message (presentation):** On Town10, with distribution-matched training, the hybrid performs better than classic published IL baselines, with additional **interpretability** (BehaviorAgent rules, HUD gating) and **uncertainty awareness** (blend-agreement heuristic).
 
-#### Supplementary: automated batch JSON (not primary)
-
-Aggregate over **3 trials** per cell (seeds 42–44), 300 s sim cap, `destination_index=80`, no NPC traffic. Success = `goals_reached >= 1` and `collision_events == 0`. These runs used a **300 s timeout** and did not match manual supervised success; they are retained for reproducibility only.
-
-| Map | CNN mode | Sessions \(N\) | Goal success rate | Collision-free rate | Mean distance (m) | Mean session time (s) |
-|-----|----------|----------------|-------------------|---------------------|-------------------|------------------------|
-| Town10HD_Opt | when_needed | 3 | 0% | 100% | 388 | 300 (timeout) |
-| Town10HD_Opt | never (baseline) | 3 | 100% | 100% | 526 | ~80–127 |
-| Town01_Opt | when_needed | 3 | 0% | 100% | 158 | 300 (timeout) |
-| Town01_Opt | never (baseline) | 3 | 100% | 100% | 734 | ~127–135 |
 
 **Protocol (2026-05-20):** `py -3.7 run_eval_town_comparison.py --skip-carla-start --trials 3 --eval-duration-s 300`. Raw JSON: `eval/`; aggregate: `eval/town_comparison_summary.json`.
 
