@@ -1,0 +1,7 @@
+# Demonstration data (local only)
+dataset/
+**/dataset/
+
+# Large local artifacts (optional; keep JSON/CSV if added later)
+models/*.pt
+models/*.pth
